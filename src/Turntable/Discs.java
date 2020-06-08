@@ -1,25 +1,29 @@
 package Turntable;
 
-import java.util.Scanner;
+import org.json.JSONObject;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Random;
+import java.util.Scanner;
 
 
 public class Discs {
-    //  Main declarations to push and pull from my future DB
+
     Scanner input  = new Scanner(System.in);
     Random  random = new Random();
 
-    private String  albumArtist;
-    private String  albumName;
-    private String  year;
-    private String  notes;
-    private int     uniqueID;
-    private int     rate = 1;
-    private boolean isOneOfMyFavourites = false;
+    private String  albumArtist;                            //  Artist
+    private String  albumName;                              //  Album name
+    private String  year;                                   //  Release year
+    private String  notes;                                  //  Personal notes
+    private int     uniqueID;                               //  Randomically generated ID
+    private int     rate = 1;                               //  Rating from 1 to 5 stars
+    private boolean isOneOfMyFavourites = false;            //  Is one of your favorite vinyl?
 
     public Discs()
     {
-        //  Gets the basic album information
+        //  Gets the basic album information from the user
         System.out.print("Name of the Album: ");
         this.albumName = input.nextLine();
 
@@ -35,11 +39,15 @@ public class Discs {
         System.out.print("Rate: ");
         this.rate = input.nextInt();
 
-        //  Calls the unique ID
+        //  Calls and alocate a unique ID to the album inserted
         GenerateId();
 
         //  Exibits the info of determined album
-        PullFromDb();
+        PullFromDb();                                     //    Pulls from the main db (in the later versions)
+        //JsonDummyDb();                                    //    Pulls from a Json mimicking a db,
+                                                          //    Just to rapidly store data for later purposes
+
+
     }
 
     private void GenerateId()
@@ -48,6 +56,28 @@ public class Discs {
         //  A random picked number and then parsing it to a hexadecimal value
         this.uniqueID = random.nextInt(90000);
         uniqueID = Integer.parseInt(String.valueOf(uniqueID));
+    }
+
+    private void JsonDummyDb() throws IOException {
+        //  Handles the Json parsing and mimics a local database
+        //  For now, this is the way (in the mandalorian voice)
+        //  The basic json file is populated with a Pink Floyd example album to debug
+        String path = "//Turntable/utl/db.json";
+        String contents;
+        contents = new String(Files.readAllBytes(Paths.get(path)));
+        JSONObject dataBase = new JSONObject(contents);
+        JSONObject albumName = dataBase.getJSONObject("albumName");
+
+        //  Needs to handle the output of the json in the next revisions
+
+
+
+    }
+
+    private void Rating() {
+        //  Implement a rating system to add the number of stars along user rate
+        //  Example:
+        //  Rating: 4 ★★★★☆
     }
 
     private void PushToDb()
@@ -64,7 +94,7 @@ public class Discs {
         System.out.println("Artist: " + albumArtist);
         System.out.println("Year: "   + year);
         System.out.println("Notes: "  + notes);
-        System.out.println("Rating: " + rate);
+        System.out.println("Rating: " + rate + " \u2605");
         System.out.println("ID: "     + uniqueID);
     }
 
